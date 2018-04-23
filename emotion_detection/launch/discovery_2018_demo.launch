@@ -1,0 +1,10 @@
+<launch>
+
+  <node pkg="emotion_detection" type="emotion_detect_average.py" name="emotion_detect" output="screen">
+  </node>
+
+	<!-- rosserial arduino node -->
+  <node pkg="rosserial_python" type="serial_node.py" name="ros_arduino_LED" output="screen">
+    <param name="port" value="/dev/arduino_led" />
+  </node>
+</launch>

@@ -1,0 +1,7 @@
+KERNEL=="ttyACM[0-9]*", SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0043", ATTRS{serial}=="557323233303511081D2", MODE="666", SYMLINK+="touch_arduino"
+
+KERNEL=="ttyACM[0-9]*", SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0043", ATTRS{serial}=="5573132353635101D050", MODE="666", SYMLINK+="LED_arduino"
+
+KERNEL=="video[0-9]*", SUBSYSTEMS=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="085c", ATTRS{serial}=="D31AA89F", MODE="666", SYMLINK+="driver_cam"
+
+KERNEL=="video[0-9]*", SUBSYSTEMS=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="0843", ATTRS{serial}=="7B9B63BE", MODE="666", SYMLINK+="front_cam"

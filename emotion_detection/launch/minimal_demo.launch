@@ -1,0 +1,6 @@
+<launch>
+  <!-- rosserial arduino node -->
+  <node pkg="rosserial_python" type="serial_node.py" name="arduino_led" >
+    <param name="port" value="/dev/ttyACM0" />
+  </node>
+</launch>
