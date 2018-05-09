@@ -102,7 +102,7 @@ emotion_window = []
 cv2.namedWindow('window_frame', cv2.WND_PROP_FULLSCREEN)
 cv2.setWindowProperty('window_frame', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 # video_capture = cv2.VideoCapture('/dev/driver_cam')
-video_capture = cv2.VideoCapture(0)
+video_capture = cv2.VideoCapture(1)
 # video_capture.set(3,640);
 # video_capture.set(4,480);
 # video_capture_front = cv2.VideoCapture('/dev/front_cam')

@@ -17,27 +17,29 @@
 
 // Here's how to control the LEDs from any two pins:
 #define DATAPIN1    8
-#define CLOCKPIN1   4
+#define CLOCKPIN1   12
 Adafruit_DotStar strip1 = Adafruit_DotStar(
   NUMPIXELS, DATAPIN1, CLOCKPIN1, DOTSTAR_BRG);
 
-#define DATAPIN2    6
+#define DATAPIN2    3
 #define CLOCKPIN2   7
 Adafruit_DotStar strip2 = Adafruit_DotStar(
   NUMPIXELS, DATAPIN2, CLOCKPIN2, DOTSTAR_BRG);
 
-#define DATAPIN3    9
-#define CLOCKPIN3   10
+#define DATAPIN3    46
+#define CLOCKPIN3   40
 Adafruit_DotStar strip3 = Adafruit_DotStar(
   NUMPIXELS, DATAPIN3, CLOCKPIN3, DOTSTAR_BRG);
 
-#define DATAPIN4    12
-#define CLOCKPIN4   13
+#define DATAPIN4    28
+#define CLOCKPIN4   24
 Adafruit_DotStar strip4 = Adafruit_DotStar(
   NUMPIXELS, DATAPIN4, CLOCKPIN4, DOTSTAR_BRG);
 
 
 // Creation of variables & functions
+void breathLoop();
+
 
 // Subscriber callback function declaration
 int emotion_status = 0;
@@ -48,6 +50,7 @@ int color_green = 1;
 int color_red   = 1;
 int color_blue  = 1;
 void EmotionUpdate(const std_msgs::Int8& msg);
+
 
 
 Timer t; // Timer variable
@@ -94,9 +97,9 @@ void loop() {
 
 int i = 0;
 uint32_t color = 0x000000;
-uint32_t red = 0;
-uint32_t green = 0; 
-uint32_t blue = 0; 
+uint8_t red = 0;
+uint8_t green = 0; 
+uint8_t blue = 0; 
 
 void breatheLED(){
   
@@ -106,28 +109,30 @@ void breatheLED(){
   else{
     count = 0;
   }
-
-  if (count > 4){
+//
+//  if (count > 4){
   
-    float val = abs(-(exp(sin(millis()/3000.0*PI)) - 0.36787944)*108.0)/5;
+//    float val = abs(-(exp(sin(millis()/3000.0*PI)) - 0.36787944)*108.0)/5;
   
-    green =  color_green*val;
-    red   =  color_red  *val;
-    blue  =  color_blue *val;
+    green =  color_green;
+    red   =  color_red  ;
+    blue  =  color_blue ;
   
     color = (green << 16) | (red << 8) | (blue);
   
-    for (int i=0; i<=NUMPIXELS; i++){
-      strip1.setPixelColor(i, color);
-      strip2.setPixelColor(i, color);
-      strip3.setPixelColor(i, color);
-      strip4.setPixelColor(i, color);
-    }
-    strip1.show();
-    strip2.show();
-    strip3.show();
-    strip4.show();
-  }
+//    for (int i=0; i<=NUMPIXELS; i++){
+//      strip1.setPixelColor(i, color);
+//      strip2.setPixelColor(i, color);
+//      strip3.setPixelColor(i, color);
+//      strip4.setPixelColor(i, color);
+//    }
+//    strip1.show();
+//    strip2.show();
+//    strip3.show();
+//    strip4.show();
+//  }
+
+    breathLoop();
 }
 
 void EmotionUpdate(const std_msgs::Int8& msg){
@@ -172,5 +177,39 @@ void EmotionUpdate(const std_msgs::Int8& msg){
       break;
     }
   }
+}
+
+void breathLoop() {
+  static int i = 0;
+  static bool flag=true;
+  int l = 1;
+  if (flag){
+    if(i++ > 200) {
+      flag = false;
+    }else{
+      for(int j=0; j<strip1.numPixels(); j++) {
+        strip1.setPixelColor(j, strip1.Color(green*i, red*i, blue*i));
+        strip2.setPixelColor(j, strip2.Color(green*i, red*i, blue*i));
+        strip3.setPixelColor(j, strip3.Color(green*i, red*i, blue*i));
+        strip4.setPixelColor(j, strip4.Color(green*i, red*i, blue*i));
+      }
+    }
+  }else{
+    if(i-- < 1) {
+      flag = true;
+    }else{
+      for(int j=0; j<strip1.numPixels(); j++) {
+        strip1.setPixelColor(j, strip1.Color(green*i, red*i, blue*i));
+        strip2.setPixelColor(j, strip2.Color(green*i, red*i, blue*i));
+        strip3.setPixelColor(j, strip3.Color(green*i, red*i, blue*i));
+        strip4.setPixelColor(j, strip4.Color(green*i, red*i, blue*i));
+      }
+    }
+  }
+  strip1.show();
+  strip2.show();
+  strip3.show();
+  strip4.show();
+  
 }
 
