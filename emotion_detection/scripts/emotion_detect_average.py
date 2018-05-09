@@ -69,6 +69,8 @@ def load_emo(path_images):
 
     return emo_list
 
+def checkEqual(iterator):
+   return len(set(iterator)) <= 1
 
 if __name__ == '__main__':
 
@@ -82,7 +84,7 @@ if __name__ == '__main__':
   publisher_object = Int8()
 
   # ROS parameters
-  cam_device = rospy.get_param('~/cam_device', '/dev/video0')
+  cam_device = rospy.get_param('~cam_device', '/dev/video0')
 
   # Set paths to images and keras models
   rospack = rospkg.RosPack()
@@ -123,6 +125,9 @@ if __name__ == '__main__':
   # video_capture_front = cv2.VideoCapture('/dev/front_cam')
   # video_capture_front.set(3,640);
   # video_capture_front.set(4,480);
+
+  emo_prev = -2*np.ones(5)
+
   while not rospy.is_shutdown():
 
     emo_ave = -1
@@ -142,8 +147,8 @@ if __name__ == '__main__':
 
     faces = detect_faces(face_detection, gray_image)
     if len(faces)>0:
-      emo_ave = 0
-      for face_coordinates in faces:
+      emo = np.zeros(len(faces))
+      for i, face_coordinates in enumerate(faces):
 
 
           x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
@@ -183,21 +188,29 @@ if __name__ == '__main__':
             dst = cv2.add(roi_bg, roi_fg)
             front_image[y:y+height, x:x+width] = dst
             # bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
-            emo_ave += emo_id
+            emo[i] = emo_id
 
-      emo_ave = int(emo_ave/len(faces))
+      emo_ave = int(round(np.average(emo)))
 
-      for k in keys:
-        if emo_dict[k] == emo_ave:
-          text = 'Overall feeling: ' + str(emo_ave)
-          cv2.putText(front_image, text, (50, 50), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 255), 2, cv2.LINE_8)
 
-    else:
-      text = 'Overall feeling: ' + 'No face detected'
-      cv2.putText(front_image, text, (50, 50), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 255), 2, cv2.LINE_8)
+    emo_prev[:4] = emo_prev[1:5]
+    emo_prev[4] = emo_ave
 
-    publisher_object.data = emo_ave
-    publisher.publish(publisher_object)
+    if checkEqual(emo_prev):
+      if emo_ave >= 0:
+        for k in keys:
+          if emo_dict[k] == emo_ave:
+            text = 'Overall feeling: ' + str(emo_ave)
+            cv2.putText(front_image, text, (50, 50), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 255), 2, cv2.LINE_8)
+
+      else:
+        text = 'Overall feeling: ' + 'No face detected'
+        cv2.putText(front_image, text, (50, 50), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 255), 2, cv2.LINE_8)
+
+
+
+      publisher_object.data = emo_ave
+      publisher.publish(publisher_object)
 
     cv2.imshow('window_frame', front_image)
     if cv2.waitKey(33) & 0xFF == ord('q'):

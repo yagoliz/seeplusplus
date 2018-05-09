@@ -1,6 +1,7 @@
 <launch>
 
   <node pkg="emotion_detection" type="emotion_detect_average.py" name="emotion_detect" output="screen">
+    <param name="cam_device" value="/dev/video0"/>
   </node>
 
 	<!-- rosserial arduino node -->

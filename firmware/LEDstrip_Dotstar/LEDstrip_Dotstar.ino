@@ -43,14 +43,11 @@ void breathLoop();
 
 // Subscriber callback function declaration
 int emotion_status = 0;
-int emotion_prev = 0;
-int count = 0;
 
-int color_green = 1;
-int color_red   = 1;
-int color_blue  = 1;
+int green = 1;
+int red   = 1;
+int blue  = 1;
 void EmotionUpdate(const std_msgs::Int8& msg);
-
 
 
 Timer t; // Timer variable
@@ -92,97 +89,15 @@ void setup() {
 void loop() {
   t.update();
   nh.spinOnce();
-  delay(50);
+  delay(10);
 }
 
-int i = 0;
-uint32_t color = 0x000000;
-uint8_t red = 0;
-uint8_t green = 0; 
-uint8_t blue = 0; 
 
-void breatheLED(){
+void breatheLED(){  
   
-  if (emotion_prev == emotion_status){
-    count++;
-  }
-  else{
-    count = 0;
-  }
-//
-//  if (count > 4){
-  
-//    float val = abs(-(exp(sin(millis()/3000.0*PI)) - 0.36787944)*108.0)/5;
-  
-    green =  color_green;
-    red   =  color_red  ;
-    blue  =  color_blue ;
-  
-    color = (green << 16) | (red << 8) | (blue);
-  
-//    for (int i=0; i<=NUMPIXELS; i++){
-//      strip1.setPixelColor(i, color);
-//      strip2.setPixelColor(i, color);
-//      strip3.setPixelColor(i, color);
-//      strip4.setPixelColor(i, color);
-//    }
-//    strip1.show();
-//    strip2.show();
-//    strip3.show();
-//    strip4.show();
-//  }
-
-    breathLoop();
-}
-
-void EmotionUpdate(const std_msgs::Int8& msg){
-  emotion_prev = emotion_status;
-  emotion_status = msg.data;
-
-  switch (emotion_status){
-    case 0: { // Disgust
-      color_red   = 1;
-      color_green = 0;
-      color_blue  = 1;
-      break;
-    }
-    case 1: { // Angry
-      color_red   = 1;
-      color_green = 0;
-      color_blue  = 0;
-      break;
-    }
-    case 2: { // Sad
-      color_red   = 0;
-      color_green = 0;
-      color_blue  = 1;
-      break;
-    }
-    case 3: { // Neutral
-      color_red   = 1;
-      color_green = 1;
-      color_blue  = 1;
-      break;
-    }
-    case 4: { // Happy
-      color_red   = 0;
-      color_green = 1;
-      color_blue  = 0;
-      break;
-    }
-    default: { // Neutral
-      color_red   = 1;
-      color_green = 1;
-      color_blue  = 1;
-      break;
-    }
-  }
-}
-
-void breathLoop() {
   static int i = 0;
   static bool flag=true;
-  int l = 1;
+
   if (flag){
     if(i++ > 200) {
       flag = false;
@@ -206,10 +121,55 @@ void breathLoop() {
       }
     }
   }
+  
   strip1.show();
   strip2.show();
   strip3.show();
   strip4.show();
-  
 }
+
+void EmotionUpdate(const std_msgs::Int8& msg){
+
+  emotion_status = msg.data;
+
+  switch (emotion_status){
+    case 0: { // Disgust
+      red   = 1;
+      green = 0;
+      blue  = 1;
+      break;
+    }
+    case 1: { // Angry
+      red   = 1;
+      green = 0;
+      blue  = 0;
+      break;
+    }
+    case 2: { // Sad
+      red   = 0;
+      green = 0;
+      blue  = 1;
+      break;
+    }
+    case 3: { // Neutral
+      red   = 1;
+      green = 1;
+      blue  = 1;
+      break;
+    }
+    case 4: { // Happy
+      red   = 0;
+      green = 1;
+      blue  = 0;
+      break;
+    }
+    default: { // Neutral
+      red   = 1;
+      green = 1;
+      blue  = 1;
+      break;
+    }
+  }
+}
+
 
