@@ -1,3 +1,0 @@
-KERNEL=="ttyUSB[0-9]*", SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0043", ATTRS{serial}=="557323233303511081D2", MODE="666", SYMLINK+="touch_arduino"
-
-KERNEL=="ttyUSB[0-9]*", SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0043", ATTRS{serial}=="5573132353635101D050", MODE="666", SYMLINK+="LED_arduino"
